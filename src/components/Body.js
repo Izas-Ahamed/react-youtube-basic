@@ -1,16 +1,13 @@
 import { useSelector } from "react-redux";
-import Header from "./Header";
-import Home from "./Home";
 import Sidebar from "./Sidebar";
+import { Outlet } from "react-router-dom";
 
 const Body = () => {
   const showSideBar = useSelector((store) => store.app.showSideBar);
   return (
     <div>
-      <Header />
       <div className="flex">
-        {showSideBar && <Sidebar />}
-        <Home />
+        {showSideBar && <Sidebar />} <Outlet />
       </div>
     </div>
   );

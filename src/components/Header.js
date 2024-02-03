@@ -23,7 +23,7 @@ const Header = () => {
           type="text"
           className="border border-gray-400 rounded-l-full m-1 w-1/2 mr-0"
         />
-        <button className="p-2 border border-gray-400 border-r-50 rounded-r-full col-span-2 m-1 ml-0">
+        <button className="px-4 bg-gray-100 border border-gray-400 border-r-50 rounded-r-full col-span-2 m-1 ml-0">
           🔍
         </button>
       </div>
