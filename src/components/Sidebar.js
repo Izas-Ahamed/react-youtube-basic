@@ -1,9 +1,14 @@
+import { Link } from "react-router-dom";
+
 const Sidebar = () => {
   return (
-    <div className="p-5 h-screen shadow-2xl w-48">
+    <div className="p-10 h-screen shadow-2xl w-48">
       <div>
         <ul>
-          <li>Home</li>
+          <Link to="/" className="cursor-pointer">
+            {" "}
+            <li>Home</li>
+          </Link>
           <li>Shorts</li>
           <li>Subscriptions</li>
         </ul>

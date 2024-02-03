@@ -1,8 +1,19 @@
 import { useDispatch } from "react-redux";
 import { toggleSideBar } from "../utils/appSlice";
+import { useRef } from "react";
 
 const Header = () => {
   const dispatch = useDispatch();
+  const searchQuery = useRef(null);
+  const handleOnSearch = async (query) => {
+    const data = await fetch(
+      "http://suggestqueries.google.com/complete/search?client=firefox&ds=yt&q=" +
+        query
+    );
+    const json = data.json();
+    console.log(json);
+  };
+
   return (
     <div className="grid grid-flow-col p-3 w-full shadow-lg">
       <div className="flex items-center col-span-1">
@@ -22,6 +33,8 @@ const Header = () => {
         <input
           type="text"
           className="border border-gray-400 rounded-l-full m-1 w-1/2 mr-0"
+          ref={searchQuery}
+          onChange={handleOnSearch}
         />
         <button className="px-4 bg-gray-100 border border-gray-400 border-r-50 rounded-r-full col-span-2 m-1 ml-0">
           🔍
