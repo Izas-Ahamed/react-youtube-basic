@@ -1,19 +1,27 @@
 import { useDispatch } from "react-redux";
 import { toggleSideBar } from "../utils/appSlice";
-import { useRef } from "react";
+import { useEffect, useState } from "react";
 
 const Header = () => {
   const dispatch = useDispatch();
-  const searchQuery = useRef(null);
-  const handleOnSearch = async (query) => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
+  useEffect(() => {
+    //debouncing
+    const timer = setTimeout(getSearchSuggestions, 150);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  const getSearchSuggestions = async () => {
     const data = await fetch(
       "http://suggestqueries.google.com/complete/search?client=firefox&ds=yt&q=" +
-        query
+        searchQuery
     );
-    const json = data.json();
-    console.log(json);
+    const json = await data.json();
+    setSearchResults(json[1]);
   };
-
   return (
     <div className="grid grid-flow-col p-3 w-full shadow-lg">
       <div className="flex items-center col-span-1">
@@ -29,18 +37,30 @@ const Header = () => {
           className="h-8 "
         />
       </div>
-      <div className="col-span-10 text-center flex">
-        <input
-          type="text"
-          className="border border-gray-400 rounded-l-full m-1 w-1/2 mr-0"
-          ref={searchQuery}
-          onChange={handleOnSearch}
-        />
-        <button className="px-4 bg-gray-100 border border-gray-400 border-r-50 rounded-r-full col-span-2 m-1 ml-0">
-          🔍
-        </button>
+      <div className="col-span-3 flex flex-col relative">
+        <div className="w-full text-center flex">
+          <input
+            type="text"
+            className="border border-gray-400 rounded-l-full w-full mr-0 p-2"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onBlur={() => setShowSuggestions(false)}
+            onFocus={() => setShowSuggestions(true)}
+          />
+          <button className="px-4 bg-gray-100 border border-gray-400 border-r-50 rounded-r-full col-span-2  ml-0">
+            🔍
+          </button>
+        </div>
+        {showSuggestions && (
+          <div className=" top-12 z-20 absolute w-full rounded-lg shadow-lg">
+            {searchResults.map((suggestion) => (
+              <div className="bg-white hover:bg-gray-50 p-4">{suggestion}</div>
+            ))}
+          </div>
+        )}
       </div>
-      <div className="col-span-1 ">
+      <div className="col-span-2"></div>
+      <div className="col-span-1 text-center ">
         <img
           src="https://www.iconpacks.net/icons/2/free-user-icon-3296-thumb.png"
           alt="user_logo"
