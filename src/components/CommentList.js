@@ -1,7 +1,6 @@
 import Comment from "./Comment";
 
 const CommentList = ({ data }) => {
-  console.log(data);
   return (
     <div className="m-1 mr-0">
       {data.map((comment, index) => (

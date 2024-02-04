@@ -1,14 +1,20 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toggleSideBar } from "../utils/appSlice";
 import { useEffect, useState } from "react";
+import { addCacheResults } from "../utils/searchSlice";
 
 const Header = () => {
   const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
-
+  const cachedResults = useSelector((store) => store.search.cachedResults);
   useEffect(() => {
+    //cache check
+    if (cachedResults[searchQuery]) {
+      setSearchResults(cachedResults[searchQuery]);
+      return;
+    }
     //debouncing
     const timer = setTimeout(getSearchSuggestions, 150);
     return () => clearTimeout(timer);
@@ -20,6 +26,7 @@ const Header = () => {
         searchQuery
     );
     const json = await data.json();
+    dispatch(addCacheResults({ [searchQuery]: json[1] }));
     setSearchResults(json[1]);
   };
   return (
@@ -52,10 +59,14 @@ const Header = () => {
           </button>
         </div>
         {showSuggestions && (
-          <div className=" top-12 z-20 absolute w-full rounded-lg shadow-lg">
-            {searchResults.map((suggestion) => (
-              <div className="bg-white hover:bg-gray-50 p-4">{suggestion}</div>
-            ))}
+          <div className="bg-white top-12 z-20 absolute w-full rounded-xl  shadow-lg">
+            <ul>
+              {searchResults.map((suggestion) => (
+                <li className="bg-white hover:bg-gray-50 p-4 rounded-xl ">
+                  {suggestion}
+                </li>
+              ))}
+            </ul>
           </div>
         )}
       </div>
