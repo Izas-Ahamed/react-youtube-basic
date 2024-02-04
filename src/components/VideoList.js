@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { VideoCard } from "./VideoCard";
 import { YT_VIDEO_LIST_API_URL } from "../utils/constants";
+import { Link } from "react-router-dom";
 
 const VideoList = () => {
   const [videosData, setVideosData] = useState([]);
@@ -15,6 +16,7 @@ const VideoList = () => {
     );
     const json = await data.json();
     setVideosData(json?.items);
+    console.log(json);
   };
 
   return (
@@ -22,7 +24,9 @@ const VideoList = () => {
       {videosData.length > 0 && (
         <>
           {videosData.map((video) => (
-            <VideoCard key={video.id} data={video} />
+            <Link to={"/watch?v=" + video.id} key={video.id}>
+              <VideoCard data={video} />
+            </Link>
           ))}
         </>
       )}
